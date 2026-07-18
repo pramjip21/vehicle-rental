@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Vehicle Management</h1>
+    <p>Add, search, view, and delete vehicles.</p>
+</div>
+
+<div class="form-section">
+    <h2>Add New Vehicle</h2>
+
+    <form method="POST" class="grid-form">
+        <div class="form-group">
+            <label>Vehicle Name</label>
+            <input type="text" name="vehicle_name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle Type</label>
+            <select name="vehicle_type" required>
+                <option value="">Select Type</option>
+                <option value="Bike">Bike</option>
+                <option value="Car">Car</option>
+                <option value="Van">Van</option>
+                <option value="Bus">Bus</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Brand</label>
+            <input type="text" name="brand" required>
+        </div>
+
+        <div class="form-group">
+            <label>Model</label>
+            <input type="text" name="model" required>
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle Number</label>
+            <input type="text" name="vehicle_number" required>
+        </div>
+
+        <div class="form-group">
+            <label>Rent Per Day</label>
+            <input type="number" name="rent_per_day" required>
+        </div>
+
+        <div class="form-group">
+            <label>Status</label>
+            <select name="status" required>
+                <option value="Available">Available</option>
+                <option value="Rented">Rented</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn primary-btn">Add Vehicle</button>
+    </form>
+</div>
+
+<div class="table-section">
+    <div class="table-header">
+        <h2>Vehicle List</h2>
+
+        <form method="GET" class="search-form">
+            <input type="text" name="search" value="{{ search }}" placeholder="Search vehicle">
+            <button type="submit" class="btn small-btn primary-btn">Search</button>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Vehicle</th>
+                <th>Type</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Number</th>
+                <th>Rent/Day</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for vehicle in vehicles %}
+            <tr>
+                <td>{{ vehicle.vehicle_id }}</td>
+                <td>{{ vehicle.vehicle_name }}</td>
+                <td>{{ vehicle.vehicle_type }}</td>
+                <td>{{ vehicle.brand }}</td>
+                <td>{{ vehicle.model }}</td>
+                <td>{{ vehicle.vehicle_number }}</td>
+                <td>₹{{ "%.2f"|format(vehicle.rent_per_day) }}</td>
+                <td>
+                    <span class="status {{ vehicle.status|lower }}">
+                        {{ vehicle.status }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{{ url_for('delete_vehicle', vehicle_id=vehicle.vehicle_id) }}"
+                       class="btn small-btn danger-btn"
+                       onclick="return confirmDelete('Delete this vehicle?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" class="empty">No vehicles found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

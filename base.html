@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vehicle Rental Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+{% if session.get("admin_id") %}
+<div class="sidebar">
+    <h2>Vehicle Rental</h2>
+
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('vehicles') }}">Vehicles</a>
+    <a href="{{ url_for('customers') }}">Customers</a>
+    <a href="{{ url_for('bookings') }}">Bookings</a>
+    <a href="{{ url_for('payments') }}">Payments</a>
+    <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+</div>
+{% endif %}
+
+<div class="{% if session.get('admin_id') %}main-content{% else %}login-content{% endif %}">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Booking Management</h1>
+    <p>Create bookings, complete returns, and cancel bookings.</p>
+</div>
+
+<div class="form-section">
+    <h2>Create New Booking</h2>
+
+    <form method="POST" class="grid-form">
+        <div class="form-group">
+            <label>Customer</label>
+            <select name="customer_id" required>
+                <option value="">Select Customer</option>
+                {% for customer in customers %}
+                <option value="{{ customer.customer_id }}">
+                    {{ customer.name }} - {{ customer.phone }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Available Vehicle</label>
+            <select name="vehicle_id" required>
+                <option value="">Select Vehicle</option>
+                {% for vehicle in vehicles %}
+                <option value="{{ vehicle.vehicle_id }}">
+                    {{ vehicle.vehicle_name }} - {{ vehicle.vehicle_number }} - ₹{{ vehicle.rent_per_day }}/day
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Start Date</label>
+            <input type="date" name="start_date" required>
+        </div>
+
+        <div class="form-group">
+            <label>End Date</label>
+            <input type="date" name="end_date" required>
+        </div>
+
+        <button type="submit" class="btn primary-btn">Create Booking</button>
+    </form>
+</div>
+
+<div class="table-section">
+    <h2>Booking List</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Vehicle</th>
+                <th>Vehicle No</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Days</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.booking_id }}</td>
+                <td>{{ booking.customer_name }}</td>
+                <td>{{ booking.vehicle_name }}</td>
+                <td>{{ booking.vehicle_number }}</td>
+                <td>{{ booking.start_date }}</td>
+                <td>{{ booking.end_date }}</td>
+                <td>{{ booking.total_days }}</td>
+                <td>₹{{ "%.2f"|format(booking.total_amount) }}</td>
+                <td>
+                    <span class="status {{ booking.status|lower }}">
+                        {{ booking.status }}
+                    </span>
+                </td>
+                <td>
+                    {% if booking.status == "Booked" %}
+                    <a href="{{ url_for('complete_booking', booking_id=booking.booking_id) }}"
+                       class="btn small-btn success-btn"
+                       onclick="return confirmDelete('Mark this booking as completed?')">
+                        Complete
+                    </a>
+
+                    <a href="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}"
+                       class="btn small-btn danger-btn"
+                       onclick="return confirmDelete('Cancel this booking?')">
+                        Cancel
+                    </a>
+                    {% else %}
+                    No Action
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="10" class="empty">No bookings found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
