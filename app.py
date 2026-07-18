@@ -7,7 +7,7 @@ from werkzeug.security import check_password_hash
 
 from database import create_database, get_connection
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "vehicle_rental_management_secret_key"
 
 create_database()

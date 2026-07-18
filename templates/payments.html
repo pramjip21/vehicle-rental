@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Payment Management</h1>
+    <p>Add payments and view payment history.</p>
+</div>
+
+<div class="form-section">
+    <h2>Add Payment</h2>
+
+    <form method="POST" class="grid-form">
+        <div class="form-group">
+            <label>Booking</label>
+            <select name="booking_id" required>
+                <option value="">Select Booking</option>
+                {% for booking in bookings %}
+                <option value="{{ booking.booking_id }}">
+                    Booking #{{ booking.booking_id }} - {{ booking.customer_name }} - {{ booking.vehicle_name }} - ₹{{ booking.total_amount }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Amount</label>
+            <input type="number" name="amount" required>
+        </div>
+
+        <div class="form-group">
+            <label>Payment Method</label>
+            <select name="payment_method" required>
+                <option value="">Select Method</option>
+                <option value="Cash">Cash</option>
+                <option value="UPI">UPI</option>
+                <option value="Card">Card</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Payment Status</label>
+            <select name="payment_status" required>
+                <option value="Paid">Paid</option>
+                <option value="Pending">Pending</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Payment Date</label>
+            <input type="date" name="payment_date" required>
+        </div>
+
+        <button type="submit" class="btn primary-btn">Add Payment</button>
+    </form>
+</div>
+
+<div class="table-section">
+    <h2>Payment History</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Payment ID</th>
+                <th>Booking ID</th>
+                <th>Customer</th>
+                <th>Vehicle</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.payment_id }}</td>
+                <td>{{ payment.booking_id }}</td>
+                <td>{{ payment.customer_name }}</td>
+                <td>{{ payment.vehicle_name }}</td>
+                <td>₹{{ "%.2f"|format(payment.amount) }}</td>
+                <td>{{ payment.payment_method }}</td>
+                <td>
+                    <span class="status {{ payment.payment_status|lower }}">
+                        {{ payment.payment_status }}
+                    </span>
+                </td>
+                <td>{{ payment.payment_date }}</td>
+                <td>
+                    <a href="{{ url_for('delete_payment', payment_id=payment.payment_id) }}"
+                       class="btn small-btn danger-btn"
+                       onclick="return confirmDelete('Delete this payment?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" class="empty">No payments found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
